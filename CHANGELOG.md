@@ -39,6 +39,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `bump_version.py` no longer emits a raw `FileNotFoundError` traceback when
   `git` is not on `PATH`; `ensure_git_on_path()` now uses `shutil.which` for a
   clean preflight and a human-readable install-guidance error.
+- GitHub Actions Linux runners now install PyQt6's required system libraries
+  (`libxkbcommon`, `libegl1`, `libdbus-1-3`, the xcb stack, `libfontconfig1`)
+  before the test step. Without them, `from PyQt6 import QtCore` aborts at
+  import time with `qt.qpa.plugin: Could not load the Qt platform plugin`
+  even under `QT_QPA_PLATFORM=offscreen` (the plugin is still dynamically
+  linked against these libs). Windows and macOS runners are unaffected.
 
 ## [0.1.1] - 2026-04-21
 
