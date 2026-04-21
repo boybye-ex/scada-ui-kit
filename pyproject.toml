@@ -1,0 +1,64 @@
+[build-system]
+# setuptools >= 77 is required for PEP 639 SPDX license expressions.
+requires = ["setuptools>=77.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scada-ui-kit"
+# Single source of truth: the version lives in scada_ui_kit/__init__.py.
+# setuptools reads it via AST parsing (no import needed) - see the
+# [tool.setuptools.dynamic] block at the bottom of this file.
+dynamic = ["version"]
+description = "A high-performance, dark-mode SCADA UI widget library for PyQt6."
+readme = "README.md"
+requires-python = ">=3.10"
+# PEP 639: SPDX identifier (string) instead of the deprecated `{ text = ... }` table.
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+  { name = "Your Name", email = "your.email@example.com" },
+]
+keywords = ["scada", "pyqt6", "industrial", "hmi", "telemetry", "dashboard"]
+# The MIT classifier is intentionally omitted: setuptools >= 77 treats license
+# classifiers as deprecated in favour of the SPDX `license` field above.
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Manufacturing",
+  "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
+]
+dependencies = [
+  "PyQt6>=6.0.0",
+]
+
+[project.optional-dependencies]
+# Install with: pip install -e .[build]
+build = [
+  "build>=1.2.0",
+  "twine>=5.0.0",
+]
+
+[project.urls]
+Homepage = "https://example.com/scada-ui-kit"
+Issues = "https://example.com/scada-ui-kit/issues"
+
+[tool.setuptools.packages.find]
+include = ["scada_ui_kit*"]
+
+# Ship the PEP 561 marker so downstream `mypy`/`pyright` will honour our hints.
+[tool.setuptools.package-data]
+scada_ui_kit = ["py.typed"]
+
+# Single-source-of-truth version resolution. Because `__version__` is a
+# module-level string literal, setuptools reads it via AST without executing
+# the module - so build environments don't need PyQt6 just to stamp a wheel.
+[tool.setuptools.dynamic]
+version = { attr = "scada_ui_kit.__version__" }
