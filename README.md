@@ -111,6 +111,25 @@ python scada_toggle.py     # toggle wired to a live status label
 - Python **3.10+**
 - PyQt6 **6.0+**
 
+## Testing
+
+The widget library ships with a `pytest` suite that exercises every Fluent
+Python idiom the public API relies on: property-based clamping, the
+`deque`-backed sequence protocol on `ScadaStripChart`, the mapping protocol
+on `ScadaIndicatorMatrix`, the `toggled(bool)` Qt signal, and the
+`IndicatorState` `IntEnum` back-compat contract.
+
+```bash
+pip install -e .[test]       # installs pytest + pytest-qt
+python -m pytest             # runs the suite headlessly via QT_QPA_PLATFORM=offscreen
+```
+
+Configuration (test paths, `qt_api`, `minversion`) lives in the
+`[tool.pytest.ini_options]` table of `pyproject.toml` - there is no separate
+`pytest.ini` or `setup.cfg`. The suite is also wired into GitHub Actions and
+runs on every push and pull request across Python 3.10 / 3.13 on Ubuntu and
+Windows.
+
 ## Building distribution artifacts
 
 The repo ships a small helper that produces an sdist and a wheel in `./dist/`

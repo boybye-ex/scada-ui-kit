@@ -45,6 +45,11 @@ build = [
   "build>=1.2.0",
   "twine>=5.0.0",
 ]
+# Install with: pip install -e .[test]
+test = [
+  "pytest>=8.0.0",
+  "pytest-qt>=4.4.0",
+]
 
 [project.urls]
 Homepage = "https://example.com/scada-ui-kit"
@@ -62,3 +67,13 @@ scada_ui_kit = ["py.typed"]
 # the module - so build environments don't need PyQt6 just to stamp a wheel.
 [tool.setuptools.dynamic]
 version = { attr = "scada_ui_kit.__version__" }
+
+# All pytest configuration lives here; no stray pytest.ini or setup.cfg.
+# `qt_api` tells pytest-qt which Qt binding to use so it doesn't probe
+# multiple ones at import time. `-ra` prints a short summary of non-passing
+# outcomes so CI logs surface the reason for every skip/xfail/fail.
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra"
+qt_api = "pyqt6"

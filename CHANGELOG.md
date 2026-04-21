@@ -12,9 +12,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CHANGELOG.md` tracking project history in Keep a Changelog format.
 - Live status, PyPI, Python, wheel, license, and changelog badges in `README.md`,
   all reading PyPI/GitHub metadata so they never drift from the source of truth.
-- GitHub Actions CI workflow (`.github/workflows/ci.yml`) that builds an sdist
-  and wheel across Python 3.10 / 3.13 on Ubuntu and Windows, runs
-  `twine check`, and uploads the verified artifacts for PR reviewers.
+- GitHub Actions CI workflow (`.github/workflows/ci.yml`) that runs `pytest`,
+  builds an sdist and wheel across Python 3.10 / 3.13 on Ubuntu and Windows,
+  runs `twine check`, and uploads the verified artifacts for PR reviewers.
+- `pytest` + `pytest-qt` test suite under `tests/` covering every public
+  Fluent Python idiom: `.value` / `.state` clamping, the `deque`-backed
+  sequence protocol, the full `ScadaIndicatorMatrix` mapping protocol
+  (including insertion-order iteration), the `toggled(bool)` signal, and
+  `IndicatorState` `IntEnum` back-compat with raw ints.
+- `[project.optional-dependencies].test` group and `[tool.pytest.ini_options]`
+  configuration in `pyproject.toml`, centralising test config alongside build
+  config (no stray `pytest.ini` / `setup.cfg`). `tests/conftest.py` forces
+  `QT_QPA_PLATFORM=offscreen` so the suite runs headless on any CI runner.
+- `publish.py --skip-existing` flag that passes through to `twine` so already-
+  uploaded files are treated as a no-op instead of an error, making re-runs
+  after partial uploads safe and idempotent.
+
+### Changed
+
+- `publish.py` now classifies upload failures into the three real causes
+  (HTTP 403 auth, HTTP 400 filename collision, network) with a concrete
+  remedy for each, instead of only suggesting a credential check.
 
 ### Fixed
 
