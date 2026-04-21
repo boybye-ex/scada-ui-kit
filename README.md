@@ -196,6 +196,7 @@ sensible safety defaults:
 python publish.py                    # uploads to TestPyPI (safe default)
 python publish.py --production       # uploads to real PyPI; asks for 'yes'
 python publish.py --production -y    # non-interactive production upload (CI)
+python publish.py --skip-existing    # idempotent: already-uploaded files are a no-op
 ```
 
 Authentication is delegated to `twine`, so any of the standard mechanisms work:

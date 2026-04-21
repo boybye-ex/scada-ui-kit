@@ -100,7 +100,12 @@ def confirm_production(skip_prompt: bool) -> None:
         raise PublishError("production upload cancelled by user")
 
 
-def upload(artifacts: Sequence[Path], production: bool) -> None:
+def upload(
+    artifacts: Sequence[Path],
+    *,
+    production: bool,
+    skip_existing: bool,
+) -> None:
     repository = "pypi" if production else "testpypi"
     # In a TTY we want verbose progress; in CI we want twine to hard-fail
     # rather than prompt for a missing password.
@@ -113,15 +118,23 @@ def upload(artifacts: Sequence[Path], production: bool) -> None:
         "--repository",
         repository,
         interaction_flag,
-        *(str(path) for path in artifacts),
     ]
+    if skip_existing:
+        cmd.append("--skip-existing")
+    cmd.extend(str(path) for path in artifacts)
     try:
         run(cmd)
     except PublishError as err:
         raise PublishError(
-            f"twine upload failed ({err}). "
-            f"Check your credentials (TWINE_USERNAME / TWINE_PASSWORD or "
-            f".pypirc) and network connectivity."
+            f"twine upload failed ({err}). Common causes:\n"
+            f"    (a) HTTP 403 'Invalid authentication' - wrong or missing "
+            f"token for this index; PyPI and TestPyPI use separate accounts "
+            f"and separate tokens.\n"
+            f"    (b) HTTP 400 'File already exists' - this name+version is "
+            f"already on the target index; bump the version or re-run with "
+            f"--skip-existing if that's expected.\n"
+            f"    (c) network / DNS failure.\n"
+            f"Twine's full response is printed above this summary."
         ) from err
 
 
@@ -150,6 +163,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="skip the preflight 'twine check' pass",
     )
+    parser.add_argument(
+        "--skip-existing",
+        action="store_true",
+        help=(
+            "pass --skip-existing to twine so files already published at the "
+            "target index are treated as a no-op instead of an error. Useful "
+            "for safely re-running after a partial or aborted upload."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -170,7 +192,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         else:
             log(f"target index: {TESTPYPI_URL}  (TestPyPI, safe default)")
 
-        upload(artifacts, production=args.production)
+        upload(
+            artifacts,
+            production=args.production,
+            skip_existing=args.skip_existing,
+        )
 
     except PublishError as err:
         log(f"FAILED: {err}")
