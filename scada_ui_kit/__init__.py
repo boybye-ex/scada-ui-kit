@@ -14,7 +14,7 @@ from .scada_widgets import ScadaRadialGauge as ScadaRadialGauge
 from .scada_widgets import ScadaStripChart as ScadaStripChart
 from .scada_widgets import ScadaToggle as ScadaToggle
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "IndicatorState",
