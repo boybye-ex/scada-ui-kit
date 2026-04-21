@@ -1,5 +1,12 @@
 # SCADA UI Kit
 
+[![CI](https://github.com/boybye-ex/scada-ui-kit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/boybye-ex/scada-ui-kit/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/scada-ui-kit.svg?label=pypi)](https://pypi.org/project/scada-ui-kit/)
+[![Python versions](https://img.shields.io/pypi/pyversions/scada-ui-kit.svg)](https://pypi.org/project/scada-ui-kit/)
+[![Wheel](https://img.shields.io/pypi/wheel/scada-ui-kit.svg)](https://pypi.org/project/scada-ui-kit/#files)
+[![License](https://img.shields.io/pypi/l/scada-ui-kit.svg)](./LICENSE)
+[![Changelog](https://img.shields.io/badge/changelog-keep%20a%20changelog-orange.svg)](./CHANGELOG.md)
+
 A robust, enterprise-grade industrial UI widget library for **PyQt6**, engineered for
 performance, deep customisation, and a smooth developer experience. The codebase is
 written to *Fluent Python* (2e) idioms: rich data-model methods, property-based APIs,
@@ -171,6 +178,8 @@ git push && git push origin vX.Y.Z
 ### Typical release flow
 
 ```bash
+# 1. Move [Unreleased] entries in CHANGELOG.md under a new [X.Y.Z] heading
+# 2. Bump, commit, and tag (all three in one go)
 python bump_version.py patch -c -t        # write, commit, tag
 python build_package.py                   # sdist + wheel + twine check
 python publish.py                         # TestPyPI (safe default)
